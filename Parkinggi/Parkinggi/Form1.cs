@@ -9,7 +9,7 @@ namespace Parkinggi
     public partial class Form1 : Form
     {
         Mat img, img1;
-        List<Mat> spacesPattern, spacesActual;
+        List<Mat> spacesActual, spacesPattern, spacesDiff;
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -41,6 +41,12 @@ namespace Parkinggi
             InitializeComponent();
         }
 
+        private void comboBox4_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var a = (ComboBox)sender;
+            imageBox1.Image = spacesDiff[a.SelectedIndex];
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
         }
@@ -53,44 +59,43 @@ namespace Parkinggi
         {
             comboBox1.Items.Add(1);
             comboBox1.Items.Add(2);
-            
+
+            comboBox2.Items.Add(1);
+            comboBox2.Items.Add(2);
+
+            comboBox3.Items.Add(1);
+            comboBox3.Items.Add(2);
+            comboBox4.Items.Add(1);
+            comboBox4.Items.Add(2);
+
             img = new Mat();
             img1 = new Mat();
-            img = CvInvoke.Imread("E:/parkFree.png", Emgu.CV.CvEnum.LoadImageType.Grayscale);
+            img = CvInvoke.Imread("E:/G0010599.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
             ibOriginal.Image = img;
-            img1 = CvInvoke.Imread("E:/park.png", Emgu.CV.CvEnum.LoadImageType.Grayscale);
+            img1 = CvInvoke.Imread("E:/G0010600.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
 
             spacesPattern = new List<Mat>();
             spacesActual = new List<Mat>();
+            spacesDiff = new List<Mat>();
 
-            for(int i=0; i<4; i++)
-            {
-                spacesPattern.Add(new Mat(img, new Rectangle(0 + 160 * i, 0, 160, 160)));
-                spacesActual.Add(new Mat(img1, new Rectangle(0 + 160 * i, 0, 160, 160)));
-                spacesPattern.Add(new Mat(img, new Rectangle(0 + 160 * i, 320, 160, 160)));
-                spacesActual.Add(new Mat(img1, new Rectangle(0 + 160 * i, 320, 160, 160)));
-            }
+            spacesPattern.Add(new Mat(img, new Rectangle(1530, 1350, 100, 50)));
+            spacesActual.Add(new Mat(img1, new Rectangle(1530, 1350, 100, 50)));
+            spacesPattern.Add(new Mat(img, new Rectangle(1530, 1450, 100, 50)));
+            spacesActual.Add(new Mat(img1, new Rectangle(1530, 1450, 100, 50)));
 
             label1.Text = "";
 
-            var freeSpaces = spacesPattern.Count;
+            var freeSpaces = 0;
             var takenSpaces = 0;
 
-            for(int i=0; i<spacesPattern.Count; i++)
+            for(int i=0; i<spacesActual.Count; i++)
             {
-                comboBox2.Items.Add(i);
-                comboBox3.Items.Add(i);
-                if(!spacesPattern[i].Equals(spacesActual[i]))
-                {
-                    takenSpaces++;
-                }
+                var tempMat = new Mat();
+                CvInvoke.AbsDiff(spacesPattern[i], spacesActual[i], tempMat);
+                spacesDiff.Add(tempMat);
             }
-            //var adsff = spacesPattern[3] - spacesActual[3];
-            var asdf = new Mat();
 
-            CvInvoke.AbsDiff(spacesPattern[3], spacesActual[3], asdf);
-
-            imageBox1.Image = asdf;
+            imageBox1.Image = spacesDiff[0];
 
             label1.Text = $"Wolne miejsca: {freeSpaces-takenSpaces}; Zajęte miejsca: {takenSpaces};";
 

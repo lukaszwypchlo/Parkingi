@@ -38,6 +38,7 @@
             this.ibProcessedTaken = new Emgu.CV.UI.ImageBox();
             this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.imageBox1 = new Emgu.CV.UI.ImageBox();
+            this.comboBox4 = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.ibOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibProcessed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibProcessedTaken)).BeginInit();
@@ -62,7 +63,7 @@
             // 
             // btnPouseOrResume
             // 
-            this.btnPouseOrResume.Location = new System.Drawing.Point(761, 412);
+            this.btnPouseOrResume.Location = new System.Drawing.Point(761, 430);
             this.btnPouseOrResume.Name = "btnPouseOrResume";
             this.btnPouseOrResume.Size = new System.Drawing.Size(124, 63);
             this.btnPouseOrResume.TabIndex = 3;
@@ -73,7 +74,7 @@
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(678, 336);
+            this.comboBox1.Location = new System.Drawing.Point(678, 351);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
             this.comboBox1.TabIndex = 4;
@@ -82,7 +83,7 @@
             // comboBox2
             // 
             this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(678, 363);
+            this.comboBox2.Location = new System.Drawing.Point(678, 387);
             this.comboBox2.Name = "comboBox2";
             this.comboBox2.Size = new System.Drawing.Size(121, 21);
             this.comboBox2.TabIndex = 5;
@@ -91,7 +92,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(675, 396);
+            this.label1.Location = new System.Drawing.Point(675, 411);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(35, 13);
             this.label1.TabIndex = 6;
@@ -108,7 +109,7 @@
             // comboBox3
             // 
             this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(845, 363);
+            this.comboBox3.Location = new System.Drawing.Point(825, 387);
             this.comboBox3.Name = "comboBox3";
             this.comboBox3.Size = new System.Drawing.Size(121, 21);
             this.comboBox3.TabIndex = 8;
@@ -122,11 +123,21 @@
             this.imageBox1.TabIndex = 9;
             this.imageBox1.TabStop = false;
             // 
+            // comboBox4
+            // 
+            this.comboBox4.FormattingEnabled = true;
+            this.comboBox4.Location = new System.Drawing.Point(825, 351);
+            this.comboBox4.Name = "comboBox4";
+            this.comboBox4.Size = new System.Drawing.Size(121, 21);
+            this.comboBox4.TabIndex = 10;
+            this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(997, 505);
+            this.Controls.Add(this.comboBox4);
             this.Controls.Add(this.imageBox1);
             this.Controls.Add(this.comboBox3);
             this.Controls.Add(this.ibProcessedTaken);
@@ -159,6 +170,7 @@
         private Emgu.CV.UI.ImageBox ibProcessedTaken;
         private System.Windows.Forms.ComboBox comboBox3;
         private Emgu.CV.UI.ImageBox imageBox1;
+        private System.Windows.Forms.ComboBox comboBox4;
     }
 }
 
