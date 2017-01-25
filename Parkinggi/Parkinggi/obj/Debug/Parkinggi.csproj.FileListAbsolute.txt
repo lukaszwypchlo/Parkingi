@@ -34,3 +34,4 @@ C:\Users\Lukasz\documents\visual studio 2015\Projects\Parkinggi\Parkinggi\bin\De
 C:\Users\Lukasz\documents\visual studio 2015\Projects\Parkinggi\Parkinggi\bin\Debug\tr\ZedGraph.resources.dll
 C:\Users\Lukasz\documents\visual studio 2015\Projects\Parkinggi\Parkinggi\bin\Debug\zh-cn\ZedGraph.resources.dll
 C:\Users\Lukasz\documents\visual studio 2015\Projects\Parkinggi\Parkinggi\bin\Debug\zh-tw\ZedGraph.resources.dll
+C:\Users\Lukasz\documents\visual studio 2015\Projects\Parkinggi\Parkinggi\obj\Debug\Parkinggi.csprojResolveAssemblyReference.cache

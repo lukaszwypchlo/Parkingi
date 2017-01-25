@@ -95,12 +95,41 @@ namespace Parkinggi
                 spacesDiff.Add(tempMat);
             }
 
+            Matrix<Byte> matrix = new Matrix<Byte>(spacesDiff[0].Rows, spacesDiff[0].Cols, spacesDiff[0].NumberOfChannels);
+            spacesDiff[0].CopyTo(matrix);
+
+            Matrix<Byte> matrix1 = new Matrix<Byte>(spacesDiff[1].Rows, spacesDiff[1].Cols, spacesDiff[1].NumberOfChannels);
+            spacesDiff[1].CopyTo(matrix1);
+
             imageBox1.Image = spacesDiff[0];
 
-            label1.Text = $"Wolne miejsca: {freeSpaces-takenSpaces}; Zajęte miejsca: {takenSpaces};";
+            label1.Text = $"Pierwszy: {perChange(matrix)}; Drugi: {perChange(matrix1)};";
 
             ibProcessed.Image = spacesPattern[0];
             ibProcessedTaken.Image = spacesActual[0];
+        }
+
+        private double perChange(Matrix<Byte> matrix)
+        {
+            double same, change;
+            same = change = 0.0;
+
+            for(int i=0; i<matrix.Rows; i++)
+            {
+                for(int j=0; j<matrix.Cols; j++)
+                {
+                    if(matrix[i,j]>30)
+                    {
+                        change++;
+                    }
+                    else
+                    {
+                        same++;
+                    }
+                }
+            }
+
+            return (change/(change+same))*100;
         }
     }
 }
