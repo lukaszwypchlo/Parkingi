@@ -4,12 +4,14 @@ using Emgu.CV;
 using System.Drawing;
 using System.Collections.Generic;
 using Emgu.CV.UI;
+using Emgu.CV.Structure;
 
 namespace Parkinggi
 {
     public partial class Form1 : Form
     {
         Mat img, img1;
+        Image<Bgr, Byte> imgImg;
         List<ParkingSpace> spaces;
         int xClick, yClick;
 
@@ -20,7 +22,7 @@ namespace Parkinggi
             var tempImg1 = new Mat(img1, new Rectangle(spaces[a.SelectedIndex].startX, spaces[a.SelectedIndex].startY, spaces[a.SelectedIndex].width, spaces[a.SelectedIndex].heigh));
             ibProcessed.Image = tempImg;
             ibProcessedTaken.Image = tempImg1;
-            
+            imgImg.Draw(new Rectangle(spaces[a.SelectedIndex].startX, spaces[a.SelectedIndex].startY, spaces[a.SelectedIndex].width, spaces[a.SelectedIndex].heigh), new Bgr(Color.Green));
             label1.Text = $"Procentowa zmiana: {String.Format("{0:0.00}", spaces[a.SelectedIndex].perChange)}%";
         }
 
@@ -29,7 +31,7 @@ namespace Parkinggi
             var a = (ComboBox)sender;
             if(a.SelectedItem.Equals(1))
             {
-                ibOriginal.Image = img;
+                ibOriginal.Image = imgImg;
             }
             else
             {
@@ -72,7 +74,8 @@ namespace Parkinggi
             comboBox1.Items.Add(2);
             
             img = CvInvoke.Imread("E:/G0010599.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-            ibOriginal.Image = img;
+            imgImg = new Image<Bgr, Byte>("E:/G0010599.JPG");
+            ibOriginal.Image = imgImg;
             img1 = CvInvoke.Imread("E:/G0010600.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
 
             //spacesPattern.Add(new Mat(img, new Rectangle(1530, 1350, 100, 50)));
