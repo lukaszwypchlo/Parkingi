@@ -36,22 +36,25 @@
             this.comboBox2 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ibProcessedTaken = new Emgu.CV.UI.ImageBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
-            this.imageBox1 = new Emgu.CV.UI.ImageBox();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.ibOriginal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibProcessed)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibProcessedTaken)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // ibOriginal
             // 
+            this.ibOriginal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ibOriginal.Location = new System.Drawing.Point(13, 13);
             this.ibOriginal.Name = "ibOriginal";
             this.ibOriginal.Size = new System.Drawing.Size(640, 480);
             this.ibOriginal.TabIndex = 2;
             this.ibOriginal.TabStop = false;
+            this.ibOriginal.Click += new System.EventHandler(this.ibOriginal_Click);
             // 
             // ibProcessed
             // 
@@ -106,40 +109,63 @@
             this.ibProcessedTaken.TabIndex = 7;
             this.ibProcessedTaken.TabStop = false;
             // 
-            // comboBox3
+            // textBox1
             // 
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(825, 387);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(121, 21);
-            this.comboBox3.TabIndex = 8;
-            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            this.textBox1.Location = new System.Drawing.Point(660, 180);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(159, 20);
+            this.textBox1.TabIndex = 11;
             // 
-            // imageBox1
+            // button1
             // 
-            this.imageBox1.Location = new System.Drawing.Point(825, 179);
-            this.imageBox1.Name = "imageBox1";
-            this.imageBox1.Size = new System.Drawing.Size(160, 160);
-            this.imageBox1.TabIndex = 9;
-            this.imageBox1.TabStop = false;
+            this.button1.Location = new System.Drawing.Point(660, 207);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 12;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // comboBox4
+            // button2
             // 
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(825, 351);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(121, 21);
-            this.comboBox4.TabIndex = 10;
-            this.comboBox4.SelectedIndexChanged += new System.EventHandler(this.comboBox4_SelectedIndexChanged);
+            this.button2.Location = new System.Drawing.Point(660, 237);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 13;
+            this.button2.Text = "szerokość";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(660, 267);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 14;
+            this.button3.Text = "wysokość";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(826, 180);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.TabIndex = 15;
+            this.button4.Text = "dodaj";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(997, 505);
-            this.Controls.Add(this.comboBox4);
-            this.Controls.Add(this.imageBox1);
-            this.Controls.Add(this.comboBox3);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.ibProcessedTaken);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBox2);
@@ -153,7 +179,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ibOriginal)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibProcessed)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ibProcessedTaken)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imageBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -168,9 +193,11 @@
         private System.Windows.Forms.ComboBox comboBox2;
         private System.Windows.Forms.Label label1;
         private Emgu.CV.UI.ImageBox ibProcessedTaken;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private Emgu.CV.UI.ImageBox imageBox1;
-        private System.Windows.Forms.ComboBox comboBox4;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button4;
     }
 }
 
