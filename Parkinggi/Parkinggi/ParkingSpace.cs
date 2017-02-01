@@ -9,6 +9,9 @@ namespace Parkinggi
 {
     class ParkingSpace
     {
+        public int number { get; set; }
+        public Mat mat { get; set; }
+        public Mat mat1 { get; set; }
         public int startX { get; set; }
         public int startY { get; set; }
         public int heigh { get; set; }

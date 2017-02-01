@@ -5,46 +5,27 @@ using System.Drawing;
 using System.Collections.Generic;
 using Emgu.CV.UI;
 using Emgu.CV.Structure;
+using Emgu.CV.CvEnum;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Parkinggi
 {
     public partial class Form1 : Form
     {
-        Mat img, img1;
+        Mat img;
         Image<Bgr, Byte> imgImg;
         List<ParkingSpace> spaces;
         int xClick, yClick;
-
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var a = (ComboBox)sender;
-            var tempImg = new Mat(img, new Rectangle(spaces[a.SelectedIndex].startX, spaces[a.SelectedIndex].startY, spaces[a.SelectedIndex].width, spaces[a.SelectedIndex].heigh));
-            var tempImg1 = new Mat(img1, new Rectangle(spaces[a.SelectedIndex].startX, spaces[a.SelectedIndex].startY, spaces[a.SelectedIndex].width, spaces[a.SelectedIndex].heigh));
-            ibProcessed.Image = tempImg;
-            ibProcessedTaken.Image = tempImg1;
-            imgImg.Draw(new Rectangle(spaces[a.SelectedIndex].startX, spaces[a.SelectedIndex].startY, spaces[a.SelectedIndex].width, spaces[a.SelectedIndex].heigh), new Bgr(Color.Green));
-            label1.Text = $"Procentowa zmiana: {String.Format("{0:0.00}", spaces[a.SelectedIndex].perChange)}%";
-        }
-
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var a = (ComboBox)sender;
-            if(a.SelectedItem.Equals(1))
-            {
-                ibOriginal.Image = imgImg;
-            }
-            else
-            {
-                ibOriginal.Image = img1;
-            }
-        }
+        int zdj;
 
         public Form1()
         {
             InitializeComponent();
             img = new Mat();
-            img1 = new Mat();
             spaces = new List<ParkingSpace>();
+            zdj = 1;
+            label1.Text = "";
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -70,41 +51,7 @@ namespace Parkinggi
 
         private void btnPouseOrResume_Click(object sender, EventArgs e)
         {
-            comboBox1.Items.Add(1);
-            comboBox1.Items.Add(2);
-            
-            img = CvInvoke.Imread("E:/G0010599.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-            imgImg = new Image<Bgr, Byte>("E:/G0010599.JPG");
-            ibOriginal.Image = imgImg;
-            img1 = CvInvoke.Imread("E:/G0010600.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
-
-            //spacesPattern.Add(new Mat(img, new Rectangle(1530, 1350, 100, 50)));
-            //spacesActual.Add(new Mat(img1, new Rectangle(1530, 1350, 100, 50)));
-            //spacesPattern.Add(new Mat(img, new Rectangle(1530, 1450, 100, 50)));
-            //spacesActual.Add(new Mat(img1, new Rectangle(1530, 1450, 100, 50)));
-
-            label1.Text = "";
-
-            var freeSpaces = 0;
-            var takenSpaces = 0;
-
-            //for(int i=0; i<spacesActual.Count; i++)
-            //{
-            //    var tempMat = new Mat();
-            //    CvInvoke.AbsDiff(spacesPattern[i], spacesActual[i], tempMat);
-            //    spacesDiff.Add(tempMat);
-            //}
-
-            //Matrix<Byte> matrix = new Matrix<Byte>(spacesDiff[0].Rows, spacesDiff[0].Cols, spacesDiff[0].NumberOfChannels);
-            //spacesDiff[0].CopyTo(matrix);
-
-            //Matrix<Byte> matrix1 = new Matrix<Byte>(spacesDiff[1].Rows, spacesDiff[1].Cols, spacesDiff[1].NumberOfChannels);
-            //spacesDiff[1].CopyTo(matrix1);
-
-            //label1.Text = $"Pierwszy: {perChange(matrix)}; Drugi: {perChange(matrix1)};";
-
-            //ibProcessed.Image = spacesPattern[0];
-            //ibProcessedTaken.Image = spacesActual[0];
+            LoadImage();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -120,14 +67,24 @@ namespace Parkinggi
 
         private void button3_Click(object sender, EventArgs e)
         {
-            var tempMat = new Mat();
+            spaces[spaces.Count - 1].isFree = checkBox1.Checked;
             spaces[spaces.Count - 1].heigh = yClick - spaces[spaces.Count - 1].startY;
-            comboBox2.Items.Add(spaces.Count);
-            CvInvoke.AbsDiff(new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh)),
-                new Mat(img1, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh)), tempMat);
-            Matrix<Byte> matrix = new Matrix<Byte>(tempMat.Rows, tempMat.Cols, tempMat.NumberOfChannels);
-            tempMat.CopyTo(matrix);
-            spaces[spaces.Count - 1].perChange = PerChange(matrix);
+            spaces[spaces.Count - 1].number = spaces.Count;
+            spaces[spaces.Count - 1].mat = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
+            spaces[spaces.Count - 1].mat1 = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
+            imgImg.Draw(new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh), new Bgr(Color.Green), 2);
+            CvInvoke.PutText(imgImg, spaces[spaces.Count - 1].number.ToString(), new System.Drawing.Point(spaces[spaces.Count - 1].startX + spaces[spaces.Count - 1].width / 2, spaces[spaces.Count - 1].startY + spaces[spaces.Count - 1].heigh / 2), FontFace.HersheySimplex, 1.5, new Bgr(Color.Green).MCvScalar, 3);
+            ibOriginal.Refresh();
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            asdf();
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -140,11 +97,11 @@ namespace Parkinggi
             double same, change;
             same = change = 0.0;
 
-            for(int i=0; i<matrix.Rows; i++)
+            for (int i = 0; i < matrix.Rows; i++)
             {
-                for(int j=0; j<matrix.Cols; j++)
+                for (int j = 0; j < matrix.Cols; j++)
                 {
-                    if(matrix[i,j]>30)
+                    if (matrix[i, j] > 30)
                     {
                         change++;
                     }
@@ -155,7 +112,55 @@ namespace Parkinggi
                 }
             }
 
-            return (change/(change+same))*100;
+            return (change / (change + same)) * 100;
+        }
+
+        private void LoadImage()
+        {
+            img = CvInvoke.Imread($"E:/Zdj3/{zdj.ToString()}.JPG", Emgu.CV.CvEnum.LoadImageType.Grayscale);
+            imgImg = new Image<Bgr, Byte>($"E:/Zdj3/{zdj.ToString()}.JPG");
+            ibOriginal.Image = imgImg;
+            zdj++;
+        }
+
+        private void asdf()
+        {
+            //while(zdj<206)
+            //{
+            LoadImage();
+            int free, taken;
+            free = taken = 0;
+            foreach (var item in spaces)
+            {
+                item.mat = item.mat1;
+                item.mat1 = new Mat(img, new Rectangle(item.startX, item.startY, item.width, item.heigh));
+                var tempMat = new Mat();
+                CvInvoke.AbsDiff(item.mat, item.mat1, tempMat);
+                var tempMatrix = new Matrix<Byte>(tempMat.Rows, tempMat.Cols, tempMat.NumberOfChannels);
+                tempMat.CopyTo(tempMatrix);
+                item.perChange = PerChange(tempMatrix);
+                imgImg.Draw(new Rectangle(item.startX, item.startY, item.width, item.heigh), new Bgr(Color.Green), 2);
+                CvInvoke.PutText(imgImg, item.number.ToString(), new System.Drawing.Point(item.startX + item.width / 2, item.startY + item.heigh / 2), FontFace.HersheySimplex, 1.5, new Bgr(Color.Green).MCvScalar, 3);
+                if(item.perChange > 30.0)
+                {
+                    item.isFree = !item.isFree;
+                }
+
+                if(item.isFree)
+                {
+                    free++;
+                }
+                else
+                {
+                    taken++;
+                }
+            }
+            ibOriginal.Refresh();
+            label1.Text = $"Ilość wolnych miejsc: {free}; Ilość zajętych miejsc: {taken};";
+            //var bindingList = new BindingList<ParkingSpace>(spaces);
+            //var source = new BindingSource(bindingList, null);
+            dataGridView1.DataSource = spaces.Select(o=> new { o.number, o.perChange, o.isFree }).ToList();
+            //}            
         }
     }
 }
