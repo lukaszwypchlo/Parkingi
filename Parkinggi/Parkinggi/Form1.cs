@@ -8,6 +8,8 @@ using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
 using System.ComponentModel;
 using System.Linq;
+using System.Net;
+using System.IO;
 
 namespace Parkinggi
 {
@@ -157,9 +159,27 @@ namespace Parkinggi
             }
             ibOriginal.Refresh();
             label1.Text = $"Ilość wolnych miejsc: {free}; Ilość zajętych miejsc: {taken};";
-            //var bindingList = new BindingList<ParkingSpace>(spaces);
-            //var source = new BindingSource(bindingList, null);
             dataGridView1.DataSource = spaces.Select(o=> new { o.number, o.perChange, o.isFree }).ToList();
+
+            var webAddr = "http://tempuri.org/WebService.asmx/callJson";
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
+            httpWebRequest.ContentType = "application/json; charset=utf-8";
+            httpWebRequest.Headers.Add("SOAPAction", "http://tempuri.org/WebService.asmx/callJson");
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string json = $"{{\"free\":\"{free}\",\"taken\":\"{taken}\"}}";
+
+                streamWriter.Write(json);
+                streamWriter.Flush();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                var result = streamReader.ReadToEnd();
+            }
             //}            
         }
     }
