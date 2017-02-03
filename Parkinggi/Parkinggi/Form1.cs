@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Emgu.CV.UI;
 using Emgu.CV.Structure;
 using Emgu.CV.CvEnum;
-using System.ComponentModel;
+using MySql.Data.MySqlClient;
 using System.Linq;
 using System.Net;
 using System.IO;
@@ -161,25 +161,16 @@ namespace Parkinggi
             label1.Text = $"Ilość wolnych miejsc: {free}; Ilość zajętych miejsc: {taken};";
             dataGridView1.DataSource = spaces.Select(o=> new { o.number, o.perChange, o.isFree }).ToList();
 
-            var webAddr = "http://tempuri.org/WebService.asmx/callJson";
-            var httpWebRequest = (HttpWebRequest)WebRequest.Create(webAddr);
-            httpWebRequest.ContentType = "application/json; charset=utf-8";
-            httpWebRequest.Headers.Add("SOAPAction", "http://tempuri.org/WebService.asmx/callJson");
-            httpWebRequest.Method = "POST";
-
-            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            var connstring = "Server=sql11.freemysqlhosting.net;Port=3306;Database=sql11156927;Uid=sql11156927;Pwd=ytlTnSgCBV;";
+            var command = $"UPDATE parking SET free_spaces = {free}, taken_spaces = {taken} WHERE row_id = 1; ";
+            using (var conn = new MySqlConnection(connstring))
             {
-                string json = $"{{\"free\":\"{free}\",\"taken\":\"{taken}\"}}";
-
-                streamWriter.Write(json);
-                streamWriter.Flush();
+                conn.Open();
+                var comm = new MySqlCommand(command, conn);
+                comm.ExecuteNonQuery();
+                conn.Close();
             }
 
-            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
-            {
-                var result = streamReader.ReadToEnd();
-            }
             //}            
         }
     }
