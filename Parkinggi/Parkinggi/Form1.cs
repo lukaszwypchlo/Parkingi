@@ -67,7 +67,7 @@ namespace Parkinggi
                         spaces[spaces.Count - 1].number = spaces.Count;
                         spaces[spaces.Count - 1].mat = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
                         spaces[spaces.Count - 1].mat1 = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
-                        imgImg.Draw(new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh), new Bgr(Color.Green), 2);
+                        imgImg.Draw(new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh), spaces[spaces.Count - 1].isFree ? new Bgr(Color.Green) : new Bgr(Color.Red), 4);                        
                         CvInvoke.PutText(imgImg, spaces[spaces.Count - 1].number.ToString(), new System.Drawing.Point(spaces[spaces.Count - 1].startX + spaces[spaces.Count - 1].width / 2, spaces[spaces.Count - 1].startY + spaces[spaces.Count - 1].heigh / 2), FontFace.HersheySimplex, 1.5, new Bgr(Color.Green).MCvScalar, 3);
                         ibOriginal.Refresh();
                         clickCount++;
@@ -157,7 +157,7 @@ namespace Parkinggi
                 var tempMatrix = new Matrix<Byte>(tempMat.Rows, tempMat.Cols, tempMat.NumberOfChannels);
                 tempMat.CopyTo(tempMatrix);
                 item.perChange = PerChange(tempMatrix);
-                imgImg.Draw(new Rectangle(item.startX, item.startY, item.width, item.heigh), new Bgr(Color.Green), 2);
+                
                 CvInvoke.PutText(imgImg, item.number.ToString(), new System.Drawing.Point(item.startX + item.width / 2, item.startY + item.heigh / 2), FontFace.HersheySimplex, 1.5, new Bgr(Color.Green).MCvScalar, 3);
                 if(item.perChange > 30.0)
                 {
@@ -172,6 +172,7 @@ namespace Parkinggi
                 {
                     taken++;
                 }
+                imgImg.Draw(new Rectangle(item.startX, item.startY, item.width, item.heigh), item.isFree ? new Bgr(Color.Green) : new Bgr(Color.Red), 4);
             }
             ibOriginal.Refresh();
             label1.Text = $"Ilość wolnych miejsc: {free}; Ilość zajętych miejsc: {taken};";
