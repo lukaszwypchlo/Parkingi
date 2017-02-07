@@ -19,7 +19,10 @@ namespace Parkinggi
         Image<Bgr, Byte> imgImg;
         List<ParkingSpace> spaces;
         int xClick, yClick;
+        int startX, startY, width, heigh;
         int zdj;
+        int clickCount;
+        bool clickFlag;
 
         public Form1()
         {
@@ -28,6 +31,8 @@ namespace Parkinggi
             spaces = new List<ParkingSpace>();
             zdj = 1;
             label1.Text = "";
+            clickCount = 0;
+            clickFlag = false;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -45,6 +50,33 @@ namespace Parkinggi
             int horizontalScrollBarValue = ib.HorizontalScrollBar.Visible ? (int)ib.HorizontalScrollBar.Value : 0;
             int verticalScrollBarValue = ib.VerticalScrollBar.Visible ? (int)ib.VerticalScrollBar.Value : 0;
             textBox1.Text = Convert.ToString(xClick = offsetX + horizontalScrollBarValue) + "." + Convert.ToString(yClick = offsetY + verticalScrollBarValue);
+
+            if (clickFlag)
+            {
+                switch (clickCount)
+                {
+                    case 0:
+                        spaces[spaces.Count - 1].startX = xClick;
+                        spaces[spaces.Count - 1].startY = yClick;
+                        clickCount++;
+                        break;
+                    case 1:
+                        spaces[spaces.Count - 1].width = xClick - spaces[spaces.Count - 1].startX;
+                        spaces[spaces.Count - 1].isFree = checkBox1.Checked;
+                        spaces[spaces.Count - 1].heigh = yClick - spaces[spaces.Count - 1].startY;
+                        spaces[spaces.Count - 1].number = spaces.Count;
+                        spaces[spaces.Count - 1].mat = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
+                        spaces[spaces.Count - 1].mat1 = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
+                        imgImg.Draw(new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh), new Bgr(Color.Green), 2);
+                        CvInvoke.PutText(imgImg, spaces[spaces.Count - 1].number.ToString(), new System.Drawing.Point(spaces[spaces.Count - 1].startX + spaces[spaces.Count - 1].width / 2, spaces[spaces.Count - 1].startY + spaces[spaces.Count - 1].heigh / 2), FontFace.HersheySimplex, 1.5, new Bgr(Color.Green).MCvScalar, 3);
+                        ibOriginal.Refresh();
+                        clickCount++;
+                        break;
+                    default:
+                        clickFlag = false;
+                        break;
+                }
+            }
         }
 
         private void Form1_FormClodes(object sender, FormClosedEventArgs e)
@@ -54,29 +86,6 @@ namespace Parkinggi
         private void btnPouseOrResume_Click(object sender, EventArgs e)
         {
             LoadImage();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            spaces[spaces.Count - 1].startX = xClick;
-            spaces[spaces.Count - 1].startY = yClick;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            spaces[spaces.Count - 1].width = xClick - spaces[spaces.Count - 1].startX;
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            spaces[spaces.Count - 1].isFree = checkBox1.Checked;
-            spaces[spaces.Count - 1].heigh = yClick - spaces[spaces.Count - 1].startY;
-            spaces[spaces.Count - 1].number = spaces.Count;
-            spaces[spaces.Count - 1].mat = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
-            spaces[spaces.Count - 1].mat1 = new Mat(img, new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh));
-            imgImg.Draw(new Rectangle(spaces[spaces.Count - 1].startX, spaces[spaces.Count - 1].startY, spaces[spaces.Count - 1].width, spaces[spaces.Count - 1].heigh), new Bgr(Color.Green), 2);
-            CvInvoke.PutText(imgImg, spaces[spaces.Count - 1].number.ToString(), new System.Drawing.Point(spaces[spaces.Count - 1].startX + spaces[spaces.Count - 1].width / 2, spaces[spaces.Count - 1].startY + spaces[spaces.Count - 1].heigh / 2), FontFace.HersheySimplex, 1.5, new Bgr(Color.Green).MCvScalar, 3);
-            ibOriginal.Refresh();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -92,6 +101,13 @@ namespace Parkinggi
         private void button4_Click(object sender, EventArgs e)
         {
             spaces.Add(new ParkingSpace());
+            clickFlag = true;
+            clickCount = 0;
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
         private double PerChange(Matrix<Byte> matrix)
@@ -161,6 +177,13 @@ namespace Parkinggi
             label1.Text = $"Ilość wolnych miejsc: {free}; Ilość zajętych miejsc: {taken};";
             dataGridView1.DataSource = spaces.Select(o=> new { o.number, o.perChange, o.isFree }).ToList();
 
+
+            SendToDB(free, taken);
+            //}            
+        }
+
+        private void SendToDB(int free, int taken)
+        {
             var connstring = "Server=sql11.freemysqlhosting.net;Port=3306;Database=sql11156927;Uid=sql11156927;Pwd=ytlTnSgCBV;";
             var command = $"UPDATE parking SET free_spaces = {free}, taken_spaces = {taken} WHERE row_id = 1; ";
             using (var conn = new MySqlConnection(connstring))
@@ -170,8 +193,6 @@ namespace Parkinggi
                 comm.ExecuteNonQuery();
                 conn.Close();
             }
-
-            //}            
         }
     }
 }
